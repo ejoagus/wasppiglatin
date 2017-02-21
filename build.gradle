@@ -70,6 +70,14 @@ task testAndReport{
 	dependsOn jacocoTestCoverageVerification
 }
 
+//Create executable Jar-file
+jar {
+    manifest {
+        attributes 'Main-Class': 'se.kth.itm.mmk.md.nmjg.PigLatin'
+    }
+    libsDirName = 'bin'
+}
+
 
 // Define the main class for the application
 mainClassName = 'PigLatin'
