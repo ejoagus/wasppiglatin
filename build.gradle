@@ -12,6 +12,11 @@ apply plugin: 'java'
 // Apply the application plugin to add support for building an application
 apply plugin: 'application'
 
+//Code coverage instrumentation
+apply plugin: 'jacoco'
+
+
+
 // In this section you declare where to find the dependencies of your project
 repositories {
     // Use jcenter for resolving your dependencies.
@@ -25,7 +30,46 @@ dependencies {
 
     // Use JUnit test framework
     testCompile 'junit:junit:4.12'
+    
+    //Use PowerMock and Mockito
+    testCompile group: 'org.mockito', name: 'mockito-all', version: '1.9.5'
+	testCompile "org.powermock:powermock-mockito-release-full:1.6.1"
 }
+
+//Basic configuration for Jacoco code coverage
+jacoco {
+    toolVersion = "0.7.6.201602180812"
+    reportsDir = file("$buildDir/reports/jacoco")
+}
+
+//Task for moving reports to a report directory
+jacocoTestReport {
+    reports {
+        xml.enabled false
+        csv.enabled false
+        html.destination "${buildDir}/jacocoHtml"
+    }
+}
+
+//Require 50% test coverage to pass build
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+        	enabled = false
+            limit {
+                minimum = 0.5
+            }
+        }
+    }
+}
+
+//Define task to run all tests and generate a complete coverage report
+task testAndReport{
+	dependsOn test
+	dependsOn jacocoTestReport
+	dependsOn jacocoTestCoverageVerification
+}
+
 
 // Define the main class for the application
 mainClassName = 'PigLatin'
